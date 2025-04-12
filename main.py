@@ -9,7 +9,6 @@ from pydantic import BaseModel
 from typing import List, Optional
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
-import googleapiclient.errors
 import googleapiclient.http
 import logging
 from dotenv import load_dotenv
