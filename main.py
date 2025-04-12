@@ -27,12 +27,12 @@ app = FastAPI()
 # Pydantic model for the incoming JSON payload.
 class VideoUploadRequest(BaseModel):
     video_url: str = r"https://drive.usercontent.google.com/u/0/uc?id=1t2U7YORidXA48i6ihKNSiH2iH3skxZq3&export=download"
-    title: str = "Uploaded from FastAPI using cloudflare r2 final video"
+    title: str = "New Guy iam pro"
     description: str = "This is an automated upload via FastAPI"
     tags: List[str] = ["test", "api", "python"]
     category_id: str = "22"
     privacy_status: str = "private"
-    publish_at: Optional[str] = "2025-04-12T8:30:00Z"
+    publish_at: Optional[str] = "2025-04-12T7:30:00Z"
 
 # Initialize boto3 client for Cloudflare R2
 s3_client = boto3.client(
@@ -44,7 +44,7 @@ s3_client = boto3.client(
 
 def authenticate_youtube():
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
-    client_secret = r"C:\Users\AC\OneDrive\Desktop\json\client.json"
+    client_secret = os.getenv('CLIENT_SECRET')
     flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
         client_secret, SCOPES
     )
