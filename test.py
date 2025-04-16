@@ -70,13 +70,13 @@ OAUTH_CLIENT_CONFIG = {
 }
 
 class VideoUploadRequest(BaseModel):
-    video_url: str = r"https://drive.usercontent.google.com/u/0/uc?id=1t2U7YORidXA48i6ihKNSiH2iH3skxZq3&export=download"
-    title: str = "Latest Video"
-    description: str = "This is an automated upload via FastAPI"
-    tags: List[str] = ["test", "api", "python"]
-    category_id: str = "22"
-    privacy_status: str = "private"
-    publish_at: Optional[str] = "2025-04-14T5:30:00Z"
+    video_url: str
+    title: str
+    description: str
+    tags: List[str]
+    category_id: str
+    privacy_status: str
+    publish_at: Optional[str]
 
 @app.get("/auth/login")
 def login():
