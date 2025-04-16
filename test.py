@@ -53,7 +53,8 @@ R2_BUCKET_NAME = os.getenv("R2_BUCKET_NAME")
 SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
     "openid",
-    "https://www.googleapis.com/auth/userinfo.email", 
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
 ]
 REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
 
