@@ -6,11 +6,12 @@ A **FastAPI-based service** that enables uploading videos to YouTube using **Clo
 
 ## 🚀 Features
 
-- **Upload Videos:** Upload videos to YouTube from any public URL.
+- **Upload Videos:** Upload videos to YouTube from any public URL or local file.
 - **Temporary Storage:** Utilize Cloudflare R2 for temporary video storage.
 - **Scheduled Publishing:** Schedule videos to be published at a specific time.
 - **Secure Authentication:** Implements OAuth 2.0 for secure access.
 - **FastAPI Backend:** Built with FastAPI for high performance and ease of use.
+- **Custom Exception Handling:** Logs and returns detailed tracebacks for debugging.
 
 ---
 
@@ -33,53 +34,62 @@ A **FastAPI-based service** that enables uploading videos to YouTube using **Clo
    cd youtube_videouploader_api
    ```
 
-2. **Install dependencies:**
+2. **Create a virtual environment and activate it:**
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies:**
 
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Set up environment variables:**
+4. **Set up environment variables:**
 
-   Export the following environment variables in your terminal or add them to your shell configuration file (e.g., `.bashrc`, `.zshrc`):
+   Create a `.env` file in the root directory and add the following variables:
 
-   ```bash
-   export R2_ACCESS_KEY_ID=your_r2_access_key_here
-   export R2_SECRET_ACCESS_KEY=your_r2_secret_key_here
-   export R2_ENDPOINT_URL=https://your_r2_endpoint_url_here
-   export R2_BUCKET_NAME=your_bucket_name_here
+   ```env
+   # Cloudflare R2 Configuration
+   R2_ACCESS_KEY_ID=your_r2_access_key_here
+   R2_SECRET_ACCESS_KEY=your_r2_secret_key_here
+   R2_ENDPOINT_URL=https://your_r2_endpoint_url_here
+   R2_BUCKET_NAME=your_bucket_name_here
 
    # Google OAuth Configuration
-   export GOOGLE_CLIENT_ID=your_google_client_id_here
-   export GOOGLE_CLIENT_SECRET=your_google_client_secret_here
-   export GOOGLE_REDIRECT_URI=http://localhost:8000/auth/callback
+   GOOGLE_CLIENT_ID=your_google_client_id_here
+   GOOGLE_CLIENT_SECRET=your_google_client_secret_here
+   GOOGLE_REDIRECT_URI=http://localhost:8000/auth/callback
 
    # MongoDB Configuration
-   export MONGO_URI=your_mongodb_connection_string_here
+   MONGO_URI=your_mongodb_connection_string_here
+   ```
+
+5. **Start the server:**
+
+   ```bash
+   uvicorn test:app --reload
    ```
 
 ---
 
 ## 🚀 Usage
 
-1. **Start the server:**
-
-   ```bash
-   uvicorn main:app --reload
-   ```
-
-2. **Authenticate with Google OAuth:**
+1. **Authenticate with Google OAuth:**
 
    - Visit the `/auth/login` endpoint to generate an authentication URL.
    - Log in with your Google account and grant the required permissions.
    - After successful authentication, the server will store your tokens in the MongoDB database.
 
-3. **Make a request to upload a video:**
+2. **Make a request to upload a video:**
 
    ```bash
    curl -X POST "http://localhost:8000/upload/" \
      -H "Content-Type: application/json" \
      -d '{
+       "upload_type": "url",
        "video_url": "https://example.com/video.mp4",
        "title": "API Upload Demo",
        "description": "Uploaded via FastAPI",
@@ -91,12 +101,12 @@ A **FastAPI-based service** that enables uploading videos to YouTube using **Clo
      -H "email: your_email@example.com"
    ```
 
-4. **Expected response:**
+3. **Expected response:**
 
    ```json
    {
      "video_id": "dQw4w9WgXcQ",
-     "message": "Video uploaded successfully."
+     "message": "Upload complete!"
    }
    ```
 
@@ -124,13 +134,22 @@ Uploads and schedules a YouTube video.
 
 ```json
 {
-  "video_url": "string",
+  "upload_type": "string (url or local)",
+  "video_url": "string (required if upload_type is url)",
+  "file": "binary (required if upload_type is local)",
   "title": "string",
   "description": "string",
   "tags": ["string"],
   "category_id": "string",
   "privacy_status": "string",
-  "publish_at": "string (ISO 8601 format)"
+  "publish_at": "string (ISO 8601 format)",
+  "embeddable": "boolean",
+  "made_for_kids": "boolean",
+  "paid_product_placement": "boolean",
+  "auto_levels": "boolean",
+  "notify_subscribers": "boolean",
+  "stabilize": "boolean",
+  "thumbnail_url": "string"
 }
 ```
 
@@ -147,7 +166,7 @@ Uploads and schedules a YouTube video.
 | Variable               | Description                | Example                               |
 | ---------------------- | -------------------------- | ------------------------------------- |
 | `R2_ACCESS_KEY_ID`     | Cloudflare R2 access key   | `your_r2_access_key_here`             |
-| `R2_SECRET_ACCESS_KEY` | Cloudflare R2 secret key   | `your_r2_secret_key_here`             |
+| `R2_SECRET_ACCESS_KEY` | Cloudflare R2 secret key   | `your_r2_secret_here`                 |
 | `R2_ENDPOINT_URL`      | R2 endpoint URL            | `https://your_r2_endpoint_url_here`   |
 | `R2_BUCKET_NAME`       | R2 bucket name             | `your_bucket_name_here`               |
 | `GOOGLE_CLIENT_ID`     | Google OAuth client ID     | `your_google_client_id_here`          |
